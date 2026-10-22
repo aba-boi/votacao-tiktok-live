@@ -1,11 +1,12 @@
-const express = require("express");
-const http = require("http");
-const WebSocket = require("ws");
-const { WebcastPushConnection } = require("tiktok-live-connector/legacy");
+
+import express from "express";
+import http from "http";
+import WebSocket, { WebSocketServer } from "ws";
+import { TikTokLiveConnection, WebcastEvent } from "tiktok-live-connector";
 
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocketServer({ server });
 
 app.use(express.json());
 app.use(express.static("public"));
@@ -121,14 +122,25 @@ app.post("/api/connect", async (req, res) => {
       } catch (_) {}
     }
 
-    live = new WebcastPushConnection(username);
+    state.connected = false;
+    state.username = username;
+    state.message = "Tentando conectar à LIVE de @" + username;
+    broadcast();
 
-    live.on("gift", gift => {
+    live = new TikTokLiveConnection(username, {
+      enableExtendedGiftInfo: true,
+      processInitialData: false
+    });
+
+    live.on(WebcastEvent.GIFT, gift => {
       if (!state.running) return;
-      if (gift.repeatEnd === false) return;
+      if (!gift.gift) return;
+
+      // Presentes em sequência só são contabilizados ao terminar.
+      if (gift.gift.type === 1 && gift.repeatEnd !== 1) return;
 
       const name = String(
-        gift.giftName || gift.gift?.name || ""
+        gift.gift.name || gift.extendedGiftInfo?.name || ""
       ).toLowerCase().trim();
 
       const count = Math.max(1, Number(gift.repeatCount || 1));
@@ -184,8 +196,7 @@ app.post("/api/start", (req, res) => {
   state.finished = false;
   state.running = true;
   state.startedAt = Date.now();
-  state.endsAt =
-    state.startedAt + state.roundDurationSeconds * 1000;
+  state.endsAt = state.startedAt + state.roundDurationSeconds * 1000;
   state.message = "Turno " + state.round + " em andamento!";
 
   broadcast();
