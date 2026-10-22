@@ -1,0 +1,14 @@
+{
+"name": "votacao-tiktok-live",
+"version": "1.0.0",
+"description": "Painel de votação para TikTok LIVE",
+"main": "server.js",
+"scripts": {
+"start": "node server.js"
+},
+"dependencies": {
+"express": "^4.21.2",
+"ws": "^8.18.0",
+"tiktok-live-connector": "^2.1.0"
+}
+}
