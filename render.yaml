@@ -1,8 +1,11 @@
-services:
 
-- type: web
-  name: votacao-tiktok-live
-  runtime: node
-  plan: free
-  buildCommand: npm install
-  startCommand: npm start
+services:
+  - type: web
+    name: votacao-tiktok-live
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
