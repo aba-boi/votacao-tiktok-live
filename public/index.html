@@ -6,35 +6,28 @@
 <title>Duelo da LIVE</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#10111a;color:white;font-family:Arial,sans-serif;padding:18px}
+body{margin:0;background:#101114;color:white;font-family:Arial,sans-serif;padding:18px}
 main{max-width:760px;margin:auto}
 h1{text-align:center;font-size:30px}
-.sub{text-align:center;color:#bbb;margin-bottom:22px}
-.timer{text-align:center;font-size:48px;font-weight:bold;margin:20px}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{padding:18px 10px;border-radius:16px;text-align:center;background:#20212d}
-.lula{border:2px solid #f04455}
-.flavio{border:2px solid #4287ff}
-.flag{font-size:36px}
-.name{font-size:21px;font-weight:bold;margin:8px 0}
-.count{font-size:36px;font-weight:bold;margin:12px}
-.percent{color:#ccc}
-.track{height:12px;background:#393a48;border-radius:10px;overflow:hidden;margin-top:14px}
-.fill{height:100%;width:0;transition:width .3s}
-.red{background:#f04455}
-.blue{background:#4287ff}
-button,input{width:100%;padding:13px;margin-top:10px;border:0;border-radius:9px;font-size:16px}
-button{font-weight:bold;cursor:pointer}
-.start{background:#38c878}
-.next{background:#4287ff;color:white}
-.stop{background:#ef4655;color:white}
-.reset{background:#333;color:white}
-#result{text-align:center;font-size:22px;font-weight:bold;margin:20px 0}
-.panel{background:#20212d;padding:16px;border-radius:14px;margin-top:16px}
-.small{font-size:13px;color:#bbb;line-height:1.5}
-h2{font-size:18px}
-li{margin:8px 0;color:#ddd}
-@media(max-width:420px){body{padding:10px}.name{font-size:17px}.count{font-size:30px}.timer{font-size:40px}}
+.sub{text-align:center;color:#bbb}
+input,button{width:100%;padding:13px;margin-top:10px;border:0;border-radius:9px;font-size:16px}
+input{background:#25262d;color:white}
+button{font-weight:bold;cursor:pointer;background:#444;color:white}
+button:disabled{opacity:.5}
+.vermelho{background:#e04455}
+.azul{background:#4287ff}
+.verde{background:#188c60}
+.grade{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.cartao{background:#20212a;border-radius:14px;padding:16px;text-align:center}
+.bandeira{font-size:35px}
+.nome{font-size:20px;font-weight:bold;margin:8px 0}
+.contar{font-size:36px;font-weight:bold;margin:12px}
+.pequeno{font-size:13px;color:#bbb}
+#status,#resultado{margin-top:16px;padding:14px;background:#20212a;border-radius:10px;text-align:center;overflow-wrap:anywhere}
+#temporizador{text-align:center;font-size:34px;font-weight:bold;margin:20px}
+.controles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+h2{font-size:18px;margin-top:24px}
+@media(max-width:420px){body{padding:10px}.grade{gap:8px}.cartao{padding:10px}}
 </style>
 </head>
 <body>
@@ -42,34 +35,134 @@ li{margin:8px 0;color:#ddd}
 <h1>⚔️ DUELO DA LIVE</h1>
 <p class="sub">Cada presente vale um voto</p>
 
-<div class="panel">
-<label for="username">Usuário da LIVE no TikTok (sem @)</label>
-<input id="username" placeholder="Ex.: seu_usuario">
-<button class="start" onclick="connectLive()">Conectar à LIVE</button>
-<p id="status" class="small">Aguardando conexão.</p>
+<label for="usuario">Usuário da LIVE no TikTok (sem @)</label>
+<input id="usuario" placeholder="Ex.: seu_usuario">
+<button id="conectar" class="azul">Conectar à LIVE</button>
+<div id="status">Carregando painel...</div>
+
+<div id="temporizador">10:00</div>
+
+<div class="grade">
+  <div class="cartao">
+    <div class="bandeira">🌹</div>
+    <div class="nome">LULA</div>
+    <div>PT · Partido dos Trabalhadores</div>
+    <div class="contar" id="lula">0</div>
+    <div class="pequeno">Rosa 🌹 = 1 voto</div>
+  </div>
+  <div class="cartao">
+    <div class="bandeira">🤍</div>
+    <div class="nome">FLÁVIO BOLSONARO</div>
+    <div>Brasil</div>
+    <div class="contar" id="flavio">0</div>
+    <div class="pequeno">Rosa branca 🤍 = 1 voto</div>
+  </div>
 </div>
 
-<div class="timer" id="timer">10:00</div>
+<div id="resultado">Conecte-se e inicie o turno.</div>
 
-<div class="cards">
-<div class="card lula">
-<div class="flag">🌹</div>
-<div class="name">LULA</div>
-<div>PT · Partido dos Trabalhadores</div>
-<div class="count" id="lula">0</div>
-<div class="percent" id="lp">0%</div>
-<div class="track"><div class="fill red" id="lb"></div></div>
-<p class="small">Rosa 🌹 = voto em Lula</p>
-</div>
-<div class="card flavio">
-<div class="flag">🇧🇷</div>
-<div class="name">FLÁVIO BOLSONARO</div>
-<div>Brasil</div>
-<div class="count" id="flavio">0</div>
-<div class="percent" id="fp">0%</div>
-<div class="track"><div class="fill blue" id="fb"></div></div>
-<p class="small">Rosa branca 🤍 = voto em Flávio</p>
-</div>
+<div class="controles">
+  <button id="iniciar" class="verde">Iniciar turno</button>
+  <button id="finalizar" class="vermelho">Finalizar turno</button>
+  <button id="proximo">Próximo turno</button>
+  <button id="reiniciar">Zerar votação</button>
 </div>
 
-<div id="result">Conecte-se e inicie o turno.</div>
+<h2>Histórico</h2>
+<div id="historico" class="pequeno">Nenhum turno finalizado.</div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+async function requisicao(url, dados) {
+  const resposta = await fetch(url, {
+    method: dados ? "POST" : "GET",
+    headers: {"Content-Type":"application/json"},
+    body: dados ? JSON.stringify(dados) : undefined
+  });
+  const resultado = await resposta.json();
+  if (!resposta.ok) throw new Error(resultado.error || "Erro na solicitação.");
+  return resultado;
+}
+
+function mostrar(s) {
+  $("status").textContent = s.message || "Status desconhecido";
+  $("lula").textContent = s.lula ?? 0;
+  $("flavio").textContent = s.flavio ?? 0;
+
+  const segundos = s.running ? (s.remaining || 0) : (s.finished ? 0 : 600);
+  $("temporizador").textContent =
+    String(Math.floor(segundos / 60)).padStart(2,"0") + ":" +
+    String(segundos % 60).padStart(2,"0");
+
+  if (s.finished) {
+    $("resultado").textContent = s.winner === "draw"
+      ? "Empate!"
+      : s.winner === "lula" ? "Lula venceu o turno!" : "Flávio Bolsonaro venceu o turno!";
+  } else {
+    $("resultado").textContent = s.running
+      ? "Turno " + s.round + " em andamento!"
+      : "Turno " + s.round + (s.connected ? " · Pronto para iniciar." : " · Conecte-se à LIVE.");
+  }
+
+  $("historico").textContent = s.history && s.history.length
+    ? s.history.map(h => "Turno " + h.round + ": " + h.result +
+        " (Lula " + h.lula + " × " + h.flavio + " Flávio)").join(" | ")
+    : "Nenhum turno finalizado.";
+}
+
+async function atualizar() {
+  try {
+    const s = await requisicao("/api/state");
+    mostrar(s);
+  } catch (e) {
+    $("status").textContent = "Não foi possível carregar o painel: " + e.message;
+  }
+}
+
+$("conectar").addEventListener("click", async () => {
+  const usuario = $("usuario").value.trim().replace(/^@/, "");
+  if (!usuario) {
+    alert("Digite seu usuário público do TikTok, sem @.");
+    return;
+  }
+  $("conectar").disabled = true;
+  $("status").textContent = "Tentando conectar à LIVE...";
+  try {
+    const r = await requisicao("/api/connect", {username:usuario});
+    mostrar(r.state);
+  } catch (e) {
+    $("status").textContent = e.message;
+    alert("Não foi possível conectar: " + e.message);
+  } finally {
+    $("conectar").disabled = false;
+  }
+});
+
+$("iniciar").addEventListener("click", async () => {
+  try { mostrar((await requisicao("/api/start", {})).state); }
+  catch(e) { alert(e.message); }
+});
+
+$("finalizar").addEventListener("click", async () => {
+  try { mostrar((await requisicao("/api/end", {})).state); }
+  catch(e) { alert(e.message); }
+});
+
+$("proximo").addEventListener("click", async () => {
+  try { mostrar((await requisicao("/api/next", {})).state); }
+  catch(e) { alert(e.message); }
+});
+
+$("reiniciar").addEventListener("click", async () => {
+  if (!confirm("Deseja zerar a votação e o histórico?")) return;
+  try { mostrar((await requisicao("/api/reset", {})).state); }
+  catch(e) { alert(e.message); }
+});
+
+atualizar();
+setInterval(atualizar, 2000);
+</script>
+</body>
+</html>
