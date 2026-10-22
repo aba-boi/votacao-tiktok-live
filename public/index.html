@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Duelo da LIVE</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#10111a;color:white;font-family:Arial,sans-serif;padding:18px}
+main{max-width:760px;margin:auto}
+h1{text-align:center;font-size:30px}
+.sub{text-align:center;color:#bbb;margin-bottom:22px}
+.timer{text-align:center;font-size:48px;font-weight:bold;margin:20px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{padding:18px 10px;border-radius:16px;text-align:center;background:#20212d}
+.lula{border:2px solid #f04455}
+.flavio{border:2px solid #4287ff}
+.flag{font-size:36px}
+.name{font-size:21px;font-weight:bold;margin:8px 0}
+.count{font-size:36px;font-weight:bold;margin:12px}
+.percent{color:#ccc}
+.track{height:12px;background:#393a48;border-radius:10px;overflow:hidden;margin-top:14px}
+.fill{height:100%;width:0;transition:width .3s}
+.red{background:#f04455}
+.blue{background:#4287ff}
+button,input{width:100%;padding:13px;margin-top:10px;border:0;border-radius:9px;font-size:16px}
+button{font-weight:bold;cursor:pointer}
+.start{background:#38c878}
+.next{background:#4287ff;color:white}
+.stop{background:#ef4655;color:white}
+.reset{background:#333;color:white}
+#result{text-align:center;font-size:22px;font-weight:bold;margin:20px 0}
+.panel{background:#20212d;padding:16px;border-radius:14px;margin-top:16px}
+.small{font-size:13px;color:#bbb;line-height:1.5}
+h2{font-size:18px}
+li{margin:8px 0;color:#ddd}
+@media(max-width:420px){body{padding:10px}.name{font-size:17px}.count{font-size:30px}.timer{font-size:40px}}
+</style>
+</head>
+<body>
+<main>
+<h1>⚔️ DUELO DA LIVE</h1>
+<p class="sub">Cada presente vale um voto</p>
+
+<div class="panel">
+<label for="username">Usuário da LIVE no TikTok (sem @)</label>
+<input id="username" placeholder="Ex.: seu_usuario">
+<button class="start" onclick="connectLive()">Conectar à LIVE</button>
+<p id="status" class="small">Aguardando conexão.</p>
+</div>
+
+<div class="timer" id="timer">10:00</div>
+
+<div class="cards">
+<div class="card lula">
+<div class="flag">🌹</div>
+<div class="name">LULA</div>
+<div>PT · Partido dos Trabalhadores</div>
+<div class="count" id="lula">0</div>
+<div class="percent" id="lp">0%</div>
+<div class="track"><div class="fill red" id="lb"></div></div>
+<p class="small">Rosa 🌹 = voto em Lula</p>
+</div>
+<div class="card flavio">
+<div class="flag">🇧🇷</div>
+<div class="name">FLÁVIO BOLSONARO</div>
+<div>Brasil</div>
+<div class="count" id="flavio">0</div>
+<div class="percent" id="fp">0%</div>
+<div class="track"><div class="fill blue" id="fb"></div></div>
+<p class="small">Rosa branca 🤍 = voto em Flávio</p>
+</div>
+</div>
+
+<div id="result">Conecte-se e inicie o turno.</div>
